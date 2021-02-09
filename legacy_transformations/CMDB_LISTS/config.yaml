@@ -1,0 +1,23 @@
+source_project: dcs-dw-prd
+source_bucket: dcsgva-cmdb-data-prd-bucket
+source_blob: cmdb/%job
+target_project: dcsgva-da-prd
+target_bucket: dcsgva-da-prd-ai-notebook
+target_blob: 01_RAW/CMDB/%job_%date.jsonl
+
+jobs:
+    #- cmdb_ci_app_server
+    #- cmdb_ci_business_app
+    #- cmdb_ci_cluster
+    #- cmdb_ci_comm
+    #- cmdb_ci_db_instance
+    #- cmdb_ci_netgear
+    - cmdb_ci_pc_hardware
+    #- cmdb_ci_printer
+    - cmdb_ci_server
+    - cmdb_ci_service_discovered
+    #- cmdb_ci_storage_server
+    - cmdb_rel_ci
+    #- cmdb_rel_type
+    #- u_cmdb_ci_computer_atm
+    #- u_cmis_app_server_component

@@ -1,0 +1,10 @@
+job_name: QVM_ALL_REPORT
+source_project: dcsgva-da-prd
+source_bucket: dcsgva-da-prd-ai-notebook
+CVE_Summary_source_blob_path: 02_INTERMEDIATE/CVE_SUMMARY/
+QID_CVE_source_blob_path: 02_INTERMEDIATE/QID_CVE_MAP/
+QID_Summary_source_blob_path: 02_INTERMEDIATE/QID_SUMMARY/
+Asset_Findings_source_blob_path: 02_INTERMEDIATE/ASSET_VM_FINDINGS/
+target_project: dcsgva-da-prd
+target_bucket: dcsgva-da-prd-ai-notebook
+target_blob: 02_INTERMEDIATE/QVM_ALL_REPORT/QVM_ALL_REPORT_%date.jsonl

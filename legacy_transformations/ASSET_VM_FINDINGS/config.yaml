@@ -1,0 +1,11 @@
+job_name: ASSET_VM_FINDINGS
+
+source_project: dcsgva-da-prd
+source_bucket: dcsgva-da-prd-ai-notebook
+
+qvm_findings_blob: 02_INTERMEDIATE/QVM_FINDINGS/QVM_FINDINGS
+cmdb_graph_blob: 02_INTERMEDIATE/CMDB_GRAPH/CMDB_GRAPH
+
+target_project: dcsgva-da-prd
+target_bucket: dcsgva-da-prd-ai-notebook
+target_blob: 02_INTERMEDIATE/ASSET_VM_FINDINGS/ASSET_VM_FINDINGS_%date.jsonl

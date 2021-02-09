@@ -1,0 +1,169 @@
+{
+    "table_name": "NVD_CVE_SUMMARY",
+    "description": "Summry details extracted from NVD CVE feed",
+    "classification": "PUBLIC",
+    "licence": "PUBLIC DOMAIN",
+    "source": ["NVD_CVE_LIST"],
+    "fields": [
+        {
+            "name": "CVE",
+            "type": "string",
+            "description": "CVE Reference Number"
+        },
+        {
+            "name": "publishedDate",
+            "type": "date"
+        },
+        {
+            "name": "CWE",
+            "type": "string"
+        },
+        {
+            "name": "Description",
+            "type": "string"
+        },
+        {
+            "name": "v2.0:vectorString",
+            "type": ["string", "nullable"]
+        },
+        {
+            "name": "v2.0:accessVector",
+            "type": ["enum", "nullable"],
+            "symbols": ["NETWORK", "LOCAL", "ADJACENT_NETWORK"]
+        },
+        {
+            "name": "v2.0:accessComplexity",
+            "type": ["enum", "nullable"],
+            "symbols": ["LOW", "MEDIUM", "HIGH"]
+        },
+        {
+            "name": "v2.0:authentication",
+            "type": ["enum", "nullable"],
+            "symbols": ["NONE", "SINGLE", "MULTIPLE"]
+        },
+        {
+            "name": "v2.0:confidentialityImpact",
+            "type": ["enum", "nullable"],
+            "symbols": ["NONE", "PARTIAL", "COMPLETE"]
+        },
+        {
+            "name": "v2.0:integrityImpact",
+            "type": ["enum", "nullable"],
+            "symbols": ["NONE", "PARTIAL", "COMPLETE"]
+        },
+        {
+            "name": "v2.0:availabilityImpact",
+            "type": ["enum", "nullable"],
+            "symbols": ["NONE", "PARTIAL", "COMPLETE"]
+        },
+        {
+            "name": "v2.0:baseScore",
+            "type": ["numeric", "nullable"],
+            "min": 0,
+            "max": 10
+        },
+        {
+            "name": "v2.0:userInteractionRequired",
+            "type": ["boolean", "nullable"]
+        },
+        {
+            "name": "v2.0:exploitabilityScore",
+            "type": ["numeric", "nullable"],
+            "min": 0,
+            "max": 10
+        },
+        {
+            "name": "v2.0:impactScore",
+            "type": ["numeric", "nullable"],
+            "min": 0,
+            "max": 10
+        },
+        {
+            "name": "v3.0:vectorString",
+            "type": ["string", "nullable"]
+        },
+        {
+            "name": "v3.0:attackVector",
+            "type": ["enum", "nullable"],
+            "symbols": ["NETWORK", "ADJACENT_NETWORK", "LOCAL", "PHYSICAL"]
+        },
+        {
+            "name": "v3.0:attackComplexity",
+            "type": ["enum", "nullable"],
+            "symbols": ["LOW", "HIGH"]
+        },
+        {
+            "name": "v3.0:privilegesRequired",
+            "type": ["enum", "nullable"],
+            "symbols": ["NONE", "LOW", "HIGH"]
+        },
+        {
+            "name": "v3.0:userInteraction",
+            "type": ["string", "nullable"],
+            "symbols": ["NONE", "REQUIRED"]
+        },
+        {
+            "name": "v3.0:scope",
+            "type": ["enum", "nullable"],
+            "symbols": ["UNCHANGED", "CHANGED"]
+        },
+        {
+            "name": "v3.0:confidentialityImpact",
+            "type": ["enum", "nullable"],
+            "symbols": ["NONE", "LOW", "HIGH"]
+        },
+        {
+            "name": "v3.0:integrityImpact",
+            "type": ["enum", "nullable"],
+            "symbols": ["NONE", "LOW", "HIGH"]
+        },
+        {
+            "name": "v3.0:availabilityImpact",
+            "type": ["enum", "nullable"],
+            "symbols": ["NONE", "LOW", "HIGH"]
+        },
+        {
+            "name": "v3.0:baseScore",
+            "type": ["numeric", "nullable"],
+            "min": 0,
+            "max": 10
+        },
+        {
+            "name": "v3.0:baseSeverity",
+            "type": ["enum", "nullable"],
+            "symbols": ["LOW", "MEDIUM", "HIGH", "CRITICAL"]
+        },
+        {
+            "name": "v3.0:exploitabilityScore",
+            "type": ["numeric", "nullable"],
+            "min": 0,
+            "max": 10
+        },
+        {
+            "name": "v3.0:impactScore",
+            "type": ["numeric", "nullable"],
+            "min": 0,
+            "max": 10
+        }
+    ],
+    "config": {
+        "source_project": "jondeploy-project",
+        "source_path": "jonhab-test/01_RAW/SNAPSHOT/NVD/NVD_CVE_LIST/%datefolders/",
+        "source_extention": ".jsonl",
+        "source_format": "json",
+        "target_project": "jondeploy-project",
+        "target_path": "jonhab-test/02_INTERMEDIATE/VIEWS/NVD_CVE_SUMMARY/%datefolders/NVD_CVE_SUMMARY_%date.jsonl",
+        "compress": true,
+        "sample_rate": 0,
+        "writers":
+            [
+                { 
+                    "name": "error_writer",
+                    "class": "gcs",
+                    "project": "jondeploy-project",
+                    "bucket": "jonhab-test",
+                    "path": "Errors/NVD_CVE_SUMMARY"
+                }
+            ]
+    }
+}

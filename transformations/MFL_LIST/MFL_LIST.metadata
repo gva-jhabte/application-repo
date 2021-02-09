@@ -1,0 +1,35 @@
+{
+    "table_name": "MFL_LIST",
+    "description": "Server CVE MFL",
+    "classification": "INTERNAL",
+    "licence": "NONE",
+    "source": "https://ghe.service.group/cso-sit/",
+    "fields":
+        [
+            { 
+                "name": "CVE", 
+                "type": "string",
+                "description": "CVE reference"
+            }
+        ],
+    "config": {
+        "target_project": "jon-deploy-project",
+        "target_path": "jonhab-test/01_RAW/SNAPSHOT/LBG/MFL/%datefolders/MFL_LIST_%date.jsonl",
+        "source_project": "jon-deploy-project",
+        "source_path": "jonhab-test/manual/MFL/%date/",
+        "source_format": "text",
+        "source_extention": ".csv",
+        "compress": false,
+        "sample_rate": 0,
+        "bin_writers":
+            [
+                { 
+                    "name": "error_writer",
+                    "class": "gcs",
+                    "project": "jon-deploy-project",
+                    "bucket": "jonhab-test",
+                    "path": "Errors/MFL_LIST"
+                }
+            ]
+    }
+}

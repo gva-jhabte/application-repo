@@ -1,0 +1,49 @@
+output_file: job_execution_graph_%Y%m%d.graphml
+jobs:
+    QID_SUMMARY:
+        type: python-script
+        working_directory: ../transformations/QID_SUMMARY/
+        script: main.py
+        requires: NONE
+    MFL_LIST:
+        type: python-script
+        working_directory: ../transformations/MFL_LIST/
+        script: main.py
+        requires: NONE
+    MITRE_EDB_MAP:
+        type: python-script
+        working_directory: ../transformations/MITRE_EDB_MAP/
+        script: main.py
+        requires: NONE
+    NVD_CVE_LIST:
+        type: python-script
+        working_directory: ../transformations/NVD_CVE_LIST/
+        script: main.py
+        requires: NONE
+    QKB_EXPLOIT:
+        type: python-script
+        working_directory: ../transformations/QKB_EXPLOIT/
+        script: main.py
+        requires: NONE
+    QID_CVE_MAP:
+        type: python-script
+        working_directory: ../transformations/QID_CVE_MAP/
+        script: main.py
+        requires: NONE
+    NVD_CVE_SUMMARY:
+        type: python-script
+        working_directory: ../transformations/NVD_CVE_SUMMARY/
+        script: main.py
+        requires: NONE
+    CVES_WITH_EXPLOITS:
+        type: python-script
+        working_directory: ../transformations/CVES_WITH_EXPLOITS/
+        script: main.py
+        requires: 
+            - QKB_EXPLOIT
+            - MITRE_EDB_MAP
+    QVM_FINDINGS:
+        type: python-script
+        working_directory: ../transformations/QVM_FINDINGS/
+        script: main.py
+        requires: NONE

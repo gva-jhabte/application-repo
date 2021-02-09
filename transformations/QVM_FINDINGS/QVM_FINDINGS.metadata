@@ -1,0 +1,160 @@
+{
+    "table_name": "QVM_FINDINGS",
+    "description": "Set of Qualys VM scan findings reported per asset",
+    "classification": "CONFIDENTIAL",
+    "licence": "UNKNOWN",
+    "source": "https://www.qualys.com/",
+    "fields": [
+        { 
+            "name": "QID",
+            "type": "numeric",
+            "description": "Qualys finding type identifier"
+        }, 
+        {
+            "name": "TYPE",
+            "type": "string",
+            "decription": "enum",
+            "symbols": ["Confirmed", "Potential"]
+        }, 
+        { 
+            "name": "SEVERITY",
+            "type": "numeric",
+            "min": 0,
+            "max": 5,
+            "description": ""
+        },
+        {
+            "name": "SSL",
+            "type": "boolean",
+            "description": ""
+        },
+        {
+            "name": "RESULTS",
+            "type": ["string", "nullable"],
+            "description": ""
+        },
+        {
+            "name": "STATUS",
+            "type": "enum",
+            "description": "",
+            "symbols": ["Active", "New", "Re-Opened"]
+        },
+        {
+            "name": "FIRST_FOUND_DATETIME",
+            "type": "date",
+            "description": ""
+        },
+        {
+            "name": "LAST_FOUND_DATETIME",
+            "type": "date",
+            "description": ""
+        },
+        {
+            "name": "TIMES_FOUND",
+            "type": "numeric",
+            "description": ""
+        },
+        {
+            "name": "LAST_TEST_DATETIME",
+            "type": "date",
+            "description": ""
+        },
+        {
+            "name": "LAST_UPDATE_DATETIME",
+            "type": "date",
+            "description": ""
+        },
+        {
+            "name": "IS_IGNORED",
+            "type": "boolean",
+            "description": ""
+        },
+        {
+            "name": "IS_DISABLED",
+            "type": "boolean",
+            "description": ""
+        },
+        {
+            "name": "LAST_PROCESSED_DATETIME",
+            "type": "date",
+            "description": ""
+        },
+        {
+            "name": "PORT",
+            "type": ["numeric", "nullable"],
+            "description": ""
+        },
+        {
+            "name": "ID",
+            "type": "numeric",
+            "description": ""
+        },
+        {
+            "name": "IP",
+            "type": "string",
+            "description": ""
+        },
+        {
+            "name": "QUALYS_OS",
+            "type": ["string", "nullable"],
+            "description": ""
+        },
+        {
+            "name": "DNS",
+            "type": ["string", "nullable"],
+            "description": ""
+        },
+        {
+            "name": "NETBIOS",
+            "type": ["string", "nullable"],
+            "description": ""
+        },
+        {
+            "name": "LAST_SCAN_DATETIME",
+            "type": "date",
+            "description": ""
+        },
+        {
+            "name": "LAST_VM_SCANNED_DATE",
+            "type": "date",
+            "description": ""
+        },
+        {
+            "name": "LAST_VM_SCANNED_DURATION",
+            "type": "numeric",
+            "description": ""
+        },
+        {
+            "name": "LAST_VM_AUTH_SCANNED_DATE",
+            "type": ["date", "nullable"],
+            "description": ""
+        }
+    ],
+    "config": {
+        "source_project": "dcs-dw-prd",
+        "source_path": "dcsgva-vmscan-data-prd-bucket/vuln-data/vm-scan/%date/",
+        "source_extention": ".xml",
+        "source_format": "text",
+        "target_project": "dcsgva-da-prd",
+        "target_path": "dcsgva-da-prd-ai-notebook/02_INTERMEDIATE/VULN_LOGS/QVM_FINDINGS/LBG/%datefolders/QVM_FINDINGS_LBG_%date.jsonl",
+        "compress": true,
+        "sample_rate": 0.001,
+        "writers":
+            [
+                { 
+                    "name": "error_writer",
+                    "class": "gcs",
+                    "project": "dcsgva-da-prd",
+                    "bucket": "dcsgva-da-prd-ai-notebook",
+                    "path": "Errors/QVM_FINDINGS"
+                },
+                { 
+                    "name": "trace_writer",
+                    "class": "gcs",
+                    "project": "dcsgva-da-prd",
+                    "bucket": "dcsgva-da-prd-ai-notebook",
+                    "path": "Trace/QVM_FINDINGS"
+                }
+            ]
+    }
+}

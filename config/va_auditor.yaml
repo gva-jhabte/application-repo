@@ -1,0 +1,3 @@
+project: dcsgva-dw-prd
+dataset: data_analytics
+table: data_transform_auditing

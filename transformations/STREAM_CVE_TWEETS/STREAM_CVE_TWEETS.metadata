@@ -1,0 +1,90 @@
+
+{
+    "table_name": "CVE_TWEETS",
+    "description": "Stream of tweets containing CVE references",
+    "classification": "PUBLIC",
+    "licence": "UNKNOWN - FAIR USE",
+    "source": "https://twitter.com/",
+    "fields": [
+        {
+            "name": "tweet_id",
+            "type": "numeric",
+            "description": "Globally unique Tweet Identifier"
+        }, 
+        { 
+            "name": "text",
+            "type": "string",
+            "description": "Tweet Body"
+        },
+        {
+            "name": "timestamp",
+            "type": "numeric",
+            "description": "Time of Tweet (Linux Epoch)"
+        },
+        {
+            "name": "user_id",
+            "type": "numeric",
+            "description": "Globally unique User Identifier"
+        },
+        {
+            "name": "user_verified",
+            "type": "boolean",
+            "description": "Is the user verified (blue tick)"
+        },
+        {
+            "name": "user_name",
+            "type": "string",
+            "description": "Name of the user (not-static)"
+        },
+        {
+            "name": "hash_tags",
+            "type": "list",
+            "description": "Hash Tags in the Tweet (limited)"
+        },
+        {
+            "name": "followers",
+            "type": "numeric",
+            "description": "The number of followers the user had at the time of the Tweet"
+        },
+        {
+            "name": "tweets_by_user",
+            "type": "numeric",
+            "description": "The number of tweets published by the user"
+        },
+        {
+            "name": "is_quoting",
+            "type": ["numeric", "nullable"],
+            "description": "The globally unique identifier of the Tweet being quoted, if quoting"
+        },
+        {
+            "name": "is_reply_to",
+            "type": ["numeric", "nullable"],
+            "description": "The globally unique identifier of the Tweet being replied to, if replying"
+        },
+        {
+            "name": "is_retweeting",
+            "type": ["numeric", "nullable"],
+            "description": "The globally unique identifier of the Tweet being retweeted, if retweeting"
+        },
+        {
+            "name": "cves",
+            "type": "list",
+            "description": "The list of CVEs being referenced in the Tweet"
+        }
+    ],
+    "config": {
+        "target_project": "dcsgva-da-prd",
+        "target_path": "dcsgva-da-prd-ai-notebook/01_RAW/APPEND/TWITTER/CVE_Tweets/%datefolders/twitter_%date.jsonl",
+        "compress": false,
+        "writers":
+            [
+                { 
+                    "name": "error_writer",
+                    "class": "gcs",
+                    "project": "dcsgva-da-prd",
+                    "bucket": "dcsgva-da-prd-ai-notebook",
+                    "path": "Errors/CVE_TWEETS"
+                }
+            ]
+    }
+}

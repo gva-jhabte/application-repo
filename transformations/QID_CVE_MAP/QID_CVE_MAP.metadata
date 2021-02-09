@@ -1,0 +1,39 @@
+{
+    "table_name": "QID_CVE_MAP",
+    "description": "Map of QIDs to CVEs",
+    "classification": "PUBLIC",
+    "licence": "UNKNOWN",
+    "source": "https://www.qualys.com/",
+    "fields": [
+        { 
+            "name": "QID",
+            "type": "numeric",
+            "description": "Qualys finding type identifier"
+        }, 
+        {
+            "name": "CVE",
+            "type": "string",
+            "description": "CVE Reference Number"
+        }
+    ],
+    "config": {
+        "source_project": "dcsgva-dw-prd",
+        "source_path": "dcsgva-vuln-data-prd-bucket/vuln-data/knowledge-base/%date/",
+        "source_extention": ".xml",
+        "source_format": "text",
+        "target_project": "dcsgva-da-prd",
+        "target_path": "dcsgva-da-prd-ai-notebook/02_INTERMEDIATE/VIEWS/QID_CVE_MAP/%datefolders/QID_CVE_MAP_%date.jsonl",
+        "compress": true,
+        "sample_rate": 0,
+        "writers":
+            [
+                { 
+                    "name": "error_writer",
+                    "class": "gcs",
+                    "project": "dcsgva-da-prd",
+                    "bucket": "dcsgva-da-prd-ai-notebook",
+                    "path": "Errors/QID_CVE_MAP"
+                }
+            ]
+    }
+}

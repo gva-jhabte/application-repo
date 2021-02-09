@@ -1,0 +1,11 @@
+job_name: CVE_SUMMARY
+source_project: dcsgva-da-prd
+source_bucket: dcsgva-da-prd-ai-notebook
+
+nvd_cve_summary_blob: 02_INTERMEDIATE/NVD_CVE_SUMMARY/NVD_CVE_SUMMARY
+mfl_list_blob: 01_RAW/MFL_LIST/MFL_LIST
+cves_with_exploits_blob: 02_INTERMEDIATE/CVES_WITH_EXPLOITS/CVES_WITH_EXPLOITS
+
+target_project: dcsgva-da-prd
+target_bucket: dcsgva-da-prd-ai-notebook
+target_blob: 02_INTERMEDIATE/CVE_SUMMARY/CVE_SUMMARY_%date.jsonl

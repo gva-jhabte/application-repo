@@ -1,0 +1,15 @@
+job_name: CMDB_GRAPH
+source_project: dcsgva-da-prd
+source_bucket: dcsgva-da-prd-ai-notebook
+ci_server_blob: 01_RAW/CMDB/cmdb_ci_server
+relationship_blob: 01_RAW/CMDB/cmdb_rel_ci
+service_discovered_blob: 01_RAW/CMDB/cmdb_ci_service_discovered
+pc_hardware_blob: 01_RAW/CMDB/cmdb_ci_pc_hardware
+
+target_project: dcsgva-da-prd
+target_bucket: dcsgva-da-prd-ai-notebook
+target_blob: 02_INTERMEDIATE/CMDB_GRAPH/CMDB_GRAPH_%date.graphml
+
+errorbin_project: dcsgva-da-prd
+errorbin_bucket: dcsgva-da-prd-ai-notebook
+errorbin_blob: ERROR_BIN/CMDB_GRAPH/CMDB_GRAPH_%date.graphml

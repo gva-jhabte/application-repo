@@ -1,0 +1,75 @@
+{
+"table_name": "CVE_SUMMARY",
+    "description": "CVE summary data defaulting to using CVSSv2 data, and enriched with MFL and Exploit existence",
+    "classification": "CONFIDENTIAL",
+    "licence": "n/a",
+    "source": "internal",
+    "fields": [
+        { 
+            "name": "CVE",
+            "type": "string",
+            "format": "CVE-\\d{4}-\\d{4-7}",
+            "description": "CVE Id (Key for data)"
+        }, 
+        {
+            "name": "Confidentiality",
+            "type": "enum",
+            "symbols": ["NONE", "PARTIAL", "COMPLETE"],
+            "description": "Confidentiality impact"
+        }, 
+        {
+            "name": "Integrity",
+            "type": "enum",
+            "symbols": ["NONE", "PARTIAL", "COMPLETE"],
+            "description": "Integrity impact"
+        }, 
+        {
+            "name": "Availability",
+            "type": "enum",
+            "symbols": ["NONE", "PARTIAL", "COMPLETE"],
+            "description": "Availability impact"
+        }, 
+        { 
+            "name": "UserInteracion",
+            "type": "boolean",
+            "description": "Is user interaction required to exploit CVE"
+        },
+        {
+            "name": "BaseScore",
+            "type": "numeric",
+            "min": 0,
+            "max": 10,
+            "description": "Number between 0 and 10, correlating to anticipated severity of CVE"
+        },
+        {
+            "name": "MFL",
+            "type": "boolean",
+            "description": "Is CVE present on the LBG Must Fix list"
+        },
+        {
+            "name": "Exploit_Known",
+            "type": "boolean",
+            "description": "Is there a recognised exploit for the CVE"
+        }
+    ],
+    "config": {
+        "source_project": "jon-deploy-project",
+        "NVD_CVE_source_path": "jonhab-test/02_INTERMEDIATE/VIEWS/NVD_CVE_SUMMARY/%datefolders",
+        "MFL_source_path": "jonhab-test/01_RAW/MFL_LIST/MFL_LIST_%date.jsonl",
+        "CVEs_with_exploits_source_path": "jonhab-test/02_INTERMEDIATE/VIEWS/CVES_WITH_EXPLOITS/%datefolders",
+        "target_project": "jon-deploy-project",
+        "target_path": "jonhab-test/02_INTERMEDIATE/VIEWS/CVE_SUMMARY/%datefolders/CVE_SUMMARY_%date.jsonl",
+        "compress": true,
+        "sample_rate": 0,
+        "writers":
+            [
+                { 
+                    "name": "error_writer",
+                    "class": "gcs",
+                    "project": "jondeploy-project",
+                    "bucket": "jonhab-test",
+                    "path": "Errors/CVE_SUMMARY"
+                }
+            ]
+    }
+}

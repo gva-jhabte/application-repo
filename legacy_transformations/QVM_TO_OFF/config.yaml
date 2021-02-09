@@ -1,0 +1,8 @@
+job_name: QVM_TO_OFF
+source_project: dcsgva-da-prd
+source_bucket: dcsgva-da-prd-ai-notebook
+source_blob: 01_RAW/QVM_LIST/QVM_LIST
+kb_source_blob: 01_RAW/QKB_LIST/QKB_LIST
+target_project: dcsgva-da-prd
+target_bucket: dcsgva-da-prd-ai-notebook
+target_blob: 02_INTERMEDIATE/QVM_TO_OFF/QVM_TO_OFF_%date.jsonl

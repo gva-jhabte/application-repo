@@ -1,0 +1,7 @@
+job_name: CVE_TO_QIDS
+source_project: dcsgva-da-prd
+source_bucket: dcsgva-da-prd-ai-notebook
+source_blob: 02_INTERMEDIATE/QID_CVE_MAP
+target_project: dcsgva-da-prd
+target_bucket: dcsgva-da-prd-ai-notebook
+target_blob: 02_INTERMEDIATE/CVE_TO_QIDS/CVE_TO_QIDS_%date.jsonl

@@ -1,0 +1,31 @@
+{
+    "table_name": "NVD_CVE_LIST",
+    "description": "List of CVEs from the National Vulnerability Database",
+    "classification": "PUBLIC",
+    "licence": "PUBLIC DOMAIN",
+    "source": "https://nvd.nist.gov/",
+    "fields":
+        [
+            { 
+                "name": "cve", 
+                "type": "other",
+                "description": "Object holding the details of the CVE"
+            }
+        ],
+    "config": {
+        "target_project": "jon-deploy-project",
+        "target_path": "jonhab-test/01_RAW/SNAPSHOT/NVD/NVD_CVE_LIST/%datefolders/NVD_CVE_LIST_%date.jsonl",
+        "compress": true,
+        "sample_rate": 0,
+        "writers":
+            [
+                { 
+                    "name": "error_writer",
+                    "class": "gcs",
+                    "project": "jon-deploy-project",
+                    "bucket": "jonhab-test",
+                    "path": "Errors/NVD_CVE_LIST"
+                }
+            ]
+    }
+}

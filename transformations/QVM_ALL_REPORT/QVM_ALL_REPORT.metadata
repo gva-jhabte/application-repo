@@ -1,0 +1,30 @@
+{"table_name": "QVM_ALL_REPORT",
+    "description": "Enriched data linking Qualys findings to CVE data and CMDB data",
+    "classification": "CONFIDENTIAL",
+    "licence": "n/a",
+    "source": "internal",
+    "fields": [
+    ],
+    "config": {
+        "job_name": "QVM_ALL_REPORT",
+        "source_project": "dcsgva-da-prd",
+        "CVE_Summary_source": "dcsgva-da-prd-ai-notebook/02_INTERMEDIATE/VIEWS/CVE_SUMMARY/%datefolders/",
+        "QID_CVE_source": "dcsgva-da-prd-ai-notebook/02_INTERMEDIATE/VIEWS/QID_CVE_MAP/%datefolders/",
+        "QID_Summary_source": "dcsgva-da-prd-ai-notebook/02_INTERMEDIATE/VIEWS/QID_SUMMARY/%datefolders/",
+        "Asset_Findings_source": "dcsgva-da-prd-ai-notebook/02_INTERMEDIATE/VIEWS/ASSET_VM_FINDINGS_TEST",
+        "target_project": "dcsgva-da-prd",
+        "target_file": "dcsgva-da-prd-ai-notebook/02_INTERMEDIATE/VIEWS/QVM_ALL_REPORT/%datefolders",
+        "compress": true,
+        "sample_rate": 0,
+        "writers":
+            [
+                { 
+                    "name": "error_writer",
+                    "class": "gcs",
+                    "project": "dcsgva-da-prd",
+                    "bucket": "dcsgva-da-prd-ai-notebook",
+                    "path": "Errors/QVM_ALL_REPORT"
+                }
+            ]
+        }
+}

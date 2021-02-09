@@ -1,0 +1,94 @@
+{
+    "table_name": "QID_SUMMARY",
+    "description": "Summary information per Qualys finding type, uniquely identified by the QID. Sourced from the Qualys KnowledgeBase",
+    "classification": "PUBLIC",
+    "licence": "UNKNOWN",
+    "source": "https://www.qualys.com/",
+    "fields": [
+        { 
+            "name": "QID",
+            "type": "numeric",
+            "description": "Qualys finding type identifier"
+        }, 
+        {
+            "name": "Patchable",
+            "type": "boolean",
+            "decription": "Qualys flag for findings with available patch"
+        }, 
+        { 
+            "name": "Published_Date",
+            "type": "date",
+            "description": "QID publish date"
+        },
+        {
+            "name": "baseScore",
+            "type": ["numeric", "nullable"],
+            "min": 0,
+            "max": 10,
+            "description": "Number between 0 and 10, correlating to anticipated severity of finding"
+        },
+        {
+            "name": "vectorString",
+            "type": ["string", "nullable"],
+            "description": "Encoded view of factors which contribute to the baseScore"
+        },
+        {
+            "name": "VulnerabilityName",
+            "type": "string",
+            "description": "Short title for the finding type"
+        },
+        {
+            "name": "Category",
+            "type": "string",
+            "description": "Qualys category (unknown purpose)"
+        },
+        {
+            "name": "VendorReferences",
+            "type": ["string", "nullable"],
+            "description": "Locations of additional information about the finding"
+        },
+        {
+            "name": "Solution",
+            "type": ["string", "nullable"],
+            "description": "Description of activities to rememdiate finding"
+        },
+        {
+            "name": "availabilityImpact",
+            "type": ["enum", "nullable"],
+            "symbols": ["NONE", "PARTIAL", "COMPLETE"],
+            "description": "CVSS style impact rating for availability"
+        },
+        {
+            "name": "confidentialityImpact",
+            "type": ["enum", "nullable"],
+            "symbols": ["NONE", "PARTIAL", "COMPLETE"],
+            "description": "CVSS style impact rating for availability"
+        },
+        {
+            "name": "integrityImpact",
+            "type": ["enum", "nullable"],
+            "symbols": ["NONE", "PARTIAL", "COMPLETE"],
+            "description": "CVSS style impact rating for availability"
+        }
+    ],
+    "config": {
+        "source_project": "dcsgva-dw-prd",
+        "source_path": "dcsgva-vuln-data-prd-bucket/vuln-data/knowledge-base/%date/",
+        "source_extention": ".xml",
+        "source_format": "text",
+        "target_project": "dcsgva-da-prd",
+        "target_path": "dcsgva-da-prd-ai-notebook/02_INTERMEDIATE/VIEWS/QID_SUMMARY/%datefolders/QID_SUMMARY_%date.jsonl",
+        "compress": true,
+        "sample_rate": 0,
+        "writers":
+            [
+                { 
+                    "name": "error_writer",
+                    "class": "gcs",
+                    "project": "dcsgva-da-prd",
+                    "bucket": "dcsgva-da-prd-ai-notebook",
+                    "path": "Errors/QID_SUMMARY"
+                }
+            ]
+    }
+}
