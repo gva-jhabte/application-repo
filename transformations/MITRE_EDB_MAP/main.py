@@ -10,6 +10,7 @@ from flask_sslify import SSLify
 from flask_cors import CORS
 import sqlalchemy
 import os
+from datetime import date
 
 from gva.logging import get_logger
 logger = get_logger()
@@ -17,7 +18,10 @@ logger.setLevel(5)
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
-# sslify = SSLify(app)
+date = date.today()
+
+sslify = SSLify(app)
+
 def init_connection_engine():
     db_config = {
         # [START cloud_sql_postgres_sqlalchemy_limit]
@@ -130,13 +134,24 @@ db = None
 def build_flow(context: dict):
 
     # define the operations in the flow
+    global db
+    db = init_connection_engine()
+    # Create tables (if they don't already exist)
+    with db.connect() as conn:
+        conn.execute(
+            "CREATE TABLE IF NOT EXISTS state "
+            "( data_feed VARCHAR(255), date DATE, "
+            "last_state VARCHAR(255));"
+        )
     acquire = AcquireExploitDbReference()
+    modify_tables('acquire')
     save_to_bucket = SaveToBucketOperator(
             project=context['config'].get('target_project'),
             to_path=context['config'].get('target_path'),
             schema=Schema(context),
             date=context.get('date'),
             compress=context['config'].get('compress'))
+    modify_tables('saved_to_bucket')
     end = EndOperator()
 
     # chain the operations to create the flow
@@ -147,17 +162,23 @@ def build_flow(context: dict):
 
     return flow
 
-@app.before_first_request
-def create_tables():
-    global db
-    db = init_connection_engine()
-    # Create tables (if they don't already exist)
-    with db.connect() as conn:
+def modify_tables(last_state):
+    conn = None
+    try:
+        db = init_connection_engine()
+        conn = db.connect()
         conn.execute(
-            "CREATE TABLE IF NOT EXISTS state "
-            "( data_feed SERIAL NOT NULL, date DATE NOT NULL, "
-            "last_state VARCHAR(255) NOT NULL );"
+            "UPDATE state " 
+            f"SET last_state = '{last_state}' "
+            f"WHERE date = '{date}';"
         )
+        conn.close()
+    except (Exception) as error:
+        print(error)
+    finally:
+        if conn is not None:
+            conn.close()
+    print(f'the value of last_state is {last_state}')
 
 @app.route('/ingest', methods=["POST"])
 def main(context: dict = {}):
@@ -176,11 +197,20 @@ def main(context: dict = {}):
     # finalize the operators
     summary = flow.finalize()
     logger.trace(summary)
+    global db
+    db = init_connection_engine()
+    print(f"the value of date is {date}")
+    with db.connect() as conn:
+        conn.execute(
+            "INSERT INTO state (data_feed, date)"
+            f"VALUES ('mitre','{date}');"
+        )
+    # modify_tables('end')
     return 'Finished Ingest'
 
 if __name__ == "__main__":
-    # app.run(ssl_context="adhoc", host="0.0.0.0", port=8080)
-    app.run(host="0.0.0.0", port=8080)
+    app.run(ssl_context="adhoc", host="0.0.0.0", port=8080)
+    # app.run(host="0.0.0.0", port=8080)
     # context = {}
     # context['config_file'] = 'MITRE_EDB_MAP.metadata'
     # main(context)
