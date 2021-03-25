@@ -139,9 +139,11 @@ def build_flow(context: dict):
     # Create tables (if they don't already exist)
     with db.connect() as conn:
         conn.execute(
-            "CREATE TABLE IF NOT EXISTS state "
+            "CREATE TABLE IF NOT EXISTS mitre_state "
             "( data_feed VARCHAR(255), date DATE, "
             "last_state VARCHAR(255));"
+            "INSERT INTO mitre_state (data_feed, date)"
+            f"VALUES ('mitre','{date}');"
         )
     acquire = AcquireExploitDbReference()
     modify_tables('acquire')
@@ -168,7 +170,7 @@ def modify_tables(last_state):
         db = init_connection_engine()
         conn = db.connect()
         conn.execute(
-            "UPDATE state " 
+            "UPDATE mitre_state " 
             f"SET last_state = '{last_state}' "
             f"WHERE date = '{date}';"
         )
@@ -178,7 +180,6 @@ def modify_tables(last_state):
     finally:
         if conn is not None:
             conn.close()
-    print(f'the value of last_state is {last_state}')
 
 @app.route('/ingest', methods=["POST"])
 def main(context: dict = {}):
@@ -197,15 +198,7 @@ def main(context: dict = {}):
     # finalize the operators
     summary = flow.finalize()
     logger.trace(summary)
-    global db
-    db = init_connection_engine()
-    print(f"the value of date is {date}")
-    with db.connect() as conn:
-        conn.execute(
-            "INSERT INTO state (data_feed, date)"
-            f"VALUES ('mitre','{date}');"
-        )
-    # modify_tables('end')
+    modify_tables('end')
     return 'Finished Ingest'
 
 if __name__ == "__main__":

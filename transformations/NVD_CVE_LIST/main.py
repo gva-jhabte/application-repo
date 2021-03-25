@@ -11,6 +11,8 @@ from flask_sslify import SSLify
 from flask_cors import CORS
 import sqlalchemy
 import os
+from datetime import date
+from google.cloud import secretmanager
 
 
 
@@ -20,8 +22,21 @@ logger.setLevel(5)
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
-sslify = SSLify(app)
+date = date.today()
 
+# sslify = SSLify(app)
+
+client = secretmanager.SecretManagerServiceClient()
+
+username = client.access_secret_version(request={"name": "projects/311966843135/secrets/dbuser/versions/1"})
+password = client.access_secret_version(request={"name": "projects/311966843135/secrets/dbpass/versions/1"})
+name = client.access_secret_version(request={"name": "projects/311966843135/secrets/dbname/versions/1"})
+# dbhost = '127.0.0.1:5432'
+db_user = username.payload.data.decode("UTF-8")
+db_pass = password.payload.data.decode("UTF-8")
+db_name = name.payload.data.decode("UTF-8")
+# db_host = dbhost.payload.data.decode("UTF-8")
+db_host = '127.0.0.1:5432'
 def init_connection_engine():
     db_config = {
         # [START cloud_sql_postgres_sqlalchemy_limit]
@@ -53,7 +68,7 @@ def init_connection_engine():
         # [END cloud_sql_postgres_sqlalchemy_lifetime]
     }
 
-    if os.environ.get("DB_HOST"):
+    if db_host:
         return init_tcp_connection_engine(db_config)
     else:
         return init_unix_connection_engine(db_config)
@@ -64,10 +79,6 @@ def init_tcp_connection_engine(db_config):
     # Remember - storing secrets in plaintext is potentially unsafe. Consider using
     # something like https://cloud.google.com/secret-manager/docs/overview to help keep
     # secrets secret.
-    db_user = os.environ["DB_USER"]
-    db_pass = os.environ["DB_PASS"]
-    db_name = os.environ["DB_NAME"]
-    db_host = os.environ["DB_HOST"]
 
     # Extract host and port from db_host
     host_args = db_host.split(":")
@@ -96,9 +107,7 @@ def init_unix_connection_engine(db_config):
     # Remember - storing secrets in plaintext is potentially unsafe. Consider using
     # something like https://cloud.google.com/secret-manager/docs/overview to help keep
     # secrets secret.
-    db_user = os.environ["DB_USER"]
-    db_pass = os.environ["DB_PASS"]
-    db_name = os.environ["DB_NAME"]
+
     db_socket_dir = os.environ.get("DB_SOCKET_DIR", "/cloudsql")
     cloud_sql_connection_name = os.environ["CLOUD_SQL_CONNECTION_NAME"]
 
@@ -133,17 +142,31 @@ db = None
 
 def build_flow(context: dict):
 
+    global db
+    db = init_connection_engine()
+    # Create tables (if they don't already exist)
+    with db.connect() as conn:
+        conn.execute(
+            "CREATE TABLE IF NOT EXISTS nvd_state "
+            "( data_feed VARCHAR(255), date DATE, "
+            "last_state VARCHAR(255));"
+            "INSERT INTO nvd_state (data_feed, date)"
+            f"VALUES ('nvd-list','{date}');"
+        )
     # define the operations in the flow
-    acquire = AcquireAnnualCveDataOperator()
-    split = SplitCveDataOperator()
 
+    acquire = AcquireAnnualCveDataOperator()
+    modify_tables('acquire')
+
+    split = SplitCveDataOperator()
+    modify_tables('split')
     save_to_bucket = SaveToBucketOperator(
             project=context['config'].get('target_project'),
             to_path=context['config'].get('target_path'),
             schema=Schema(context),
             date=context.get('date'),
             compress=context['config'].get('compress'))
-
+    modify_tables('save_to_bucket')
     end = EndOperator()
 
     # chain the operations to create the flow
@@ -154,19 +177,24 @@ def build_flow(context: dict):
 
     return flow
 
-@app.before_first_request
-def create_tables():
-    global db
-    db = init_connection_engine()
-    # Create tables (if they don't already exist)
-    with db.connect() as conn:
+def modify_tables(last_state):
+    conn = None
+    try:
+        db = init_connection_engine()
+        conn = db.connect()
         conn.execute(
-            "CREATE TABLE IF NOT EXISTS state "
-            "( data_feed SERIAL NOT NULL, date timestamp NOT NULL, "
-            "last_state VARCHAR(6) NOT NULL );"
+            "UPDATE nvd_state " 
+            f"SET last_state = '{last_state}' "
+            f"WHERE date = '{date}';"
         )
+        conn.close()
+    except (Exception) as error:
+        print(error)
+    finally:
+        if conn is not None:
+            conn.close()
 
-@app.route('/ingest')
+@app.route('/ingest', methods=["POST"])
 def main(context: dict = {}):
     context['config_file'] = 'NVD_CVE_LIST.metadata'
     # create the run context from the config and context passed to main
@@ -189,7 +217,9 @@ def main(context: dict = {}):
     # finalize the operators
     summary = flow.finalize()
     logger.trace(summary)
+    modify_tables('end')
     return 'Finished Ingest'
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
+    # app.run(ssl_context="adhoc", host="0.0.0.0", port=8080)
